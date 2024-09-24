@@ -12,8 +12,8 @@ class FuelData(BaseModel):
     Cycle: int
     Fuel_Consumed: float
     Fuel_Rate: float
-    Time_Awal: int
-    Time_Akhir: int
+    Time_Awal: str
+    Time_Akhir: str
 
 
 @app.post("/fuel-rate", status_code=201)

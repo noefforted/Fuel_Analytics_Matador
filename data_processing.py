@@ -2,6 +2,24 @@ import pandas as pd
 import numpy as np
 
 
+def remove_idle_data(data: np.array, tdelay: int = 600):
+    res = np.array([True for _ in range(data.shape[0])])
+    f_read = False
+    f_start_delay = 0
+    res[0] = False
+    for iter in range(1, data.shape[0]):
+        if not data[iter-1, 11] and data[iter, 11]:
+            f_read = True
+            f_start_delay = data[iter, 1]
+        elif data[iter-1, 11] and not data[iter, 11]:
+            f_read = False
+        if f_read and data[iter, 1] - f_start_delay > np.timedelta64(tdelay, "s"):
+            res[iter] = True
+        else:
+            res[iter] = False
+    return data[res]
+
+
 def median_filter(y):
     window_size = 70  # Pilih ukuran jendela yang tepat
     y_median = pd.Series(y).rolling(window=window_size,
@@ -9,7 +27,7 @@ def median_filter(y):
     return y_median
 
 
-def regression(x, y_median):
+def define_cycle(x, y_median):
     cycles_median = []
     current_cycle = []
     n = len(x)
@@ -33,28 +51,33 @@ def regression(x, y_median):
     if current_cycle:
         cycles_median.append(np.array(current_cycle))
 
+    return cycles_median
+
+
+def regression(cycles_median):
     # Plot regresi untuk setiap siklus
     regression_results = []
     for i, cycle in enumerate(cycles_median):
         if len(cycle) > 1:
             x_cycle = cycle[:, 0]
             y_cycle = cycle[:, 1]
-            coeffs = np.polyfit(x_cycle, y_cycle, 3)
+            coeffs = np.polyfit(x_cycle, y_cycle, 1)
             poly_eq = np.poly1d(coeffs)
             y_pred = poly_eq(x_cycle)
+            y_pred = np.maximum(y_pred, 0)
             regression_results.append(np.column_stack((x_cycle, y_pred)))
 
     return regression_results
 
 
-def fuel_calculation(df, cycles_median):
+def fuel_calculation(df, data_reg):
     # Menghitung total fuel consumed dan fuel rate untuk setiap siklus
     fuel_consumed = []
     fuel_rate = []
     time_initial_list = []
     time_terminal_list = []
 
-    for cycle in cycles_median:
+    for cycle in data_reg:
         if len(cycle) > 1:  # Memastikan ada lebih dari satu titik dalam siklus
             x_cycle = cycle[:, 0]
             y_cycle = cycle[:, 1]
@@ -73,9 +96,9 @@ def fuel_calculation(df, cycles_median):
 
             # Mendapatkan time_initial dan time_terminal
             res_awal = df[df["distance_total"] == x_cycle[0]]
-            time_initial = int(res_awal.iloc[0]["timestamp"].timestamp())
+            time_initial = str(res_awal.iloc[0]["timestamp"])
             res_akhir = df[df["distance_total"] == x_cycle[-1]]
-            time_terminal = int(res_akhir.iloc[0]["timestamp"].timestamp())
+            time_terminal = str(res_akhir.iloc[0]["timestamp"])
 
             # Simpan nilai time_initial dan time_terminal untuk setiap siklus
             time_initial_list.append(time_initial)
@@ -90,9 +113,3 @@ def fuel_calculation(df, cycles_median):
         'Time_Akhir': time_terminal_list
     })
     return fuel_data_summary
-
-
-# x, y = import_data()
-# y_median = median_filter(y)
-# y_regression = regression(x, y_median)
-# fuel_calculation(x, y_regression)
