@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import requests
 
 now = datetime.now()
-delta = now - timedelta(hours=6)
+delta = now - timedelta(days=30)
 
 url = "http://127.0.0.1:8000/fuel-rate"  # Endpoint API Anda
 

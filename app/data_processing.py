@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 
 def remove_idle_data(data: np.array, tdelay: int = 600):
@@ -96,15 +97,17 @@ def fuel_calculation(df, data_reg):
             fuel_rate.append(rate)
             cycle_distance.append(total_distance)
 
-            # Mendapatkan time_initial dan time_terminal
-            res_awal = df[df["distance_total"] == x_cycle[0]]
-            time_initial = str(res_awal.iloc[0]["timestamp"])
-            res_akhir = df[df["distance_total"] == x_cycle[-1]]
-            time_terminal = str(res_akhir.iloc[0]["timestamp"])
+        # Mendapatkan time_initial dan time_terminal
+        res_awal = df[df["distance_total"] == x_cycle[0]]
+        time_initial = datetime.fromisoformat(
+            str(res_awal.iloc[0]["timestamp"])).strftime("%Y-%m-%dT%H:%M:%SZ")
+        res_akhir = df[df["distance_total"] == x_cycle[-1]]
+        time_terminal = datetime.fromisoformat(
+            str(res_akhir.iloc[0]["timestamp"])).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-            # Simpan nilai time_initial dan time_terminal untuk setiap siklus
-            time_initial_list.append(time_initial)
-            time_terminal_list.append(time_terminal)
+        # Simpan nilai time_initial dan time_terminal untuk setiap siklus
+        time_initial_list.append(time_initial)
+        time_terminal_list.append(time_terminal)
 
     # Membuat DataFrame untuk hasilnya
     fuel_data_summary = pd.DataFrame({
