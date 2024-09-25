@@ -72,7 +72,8 @@ def regression(cycles_median):
 
 def fuel_calculation(df, data_reg):
     # Menghitung total fuel consumed dan fuel rate untuk setiap siklus
-    fuel_consumed = []
+    cycle_fuel_consumed = []
+    cycle_distance = []
     fuel_rate = []
     time_initial_list = []
     time_terminal_list = []
@@ -91,8 +92,9 @@ def fuel_calculation(df, data_reg):
                 y_cycle)] - x_cycle[np.argmax(y_cycle)]
             rate = round((total_distance / 1000) / (ymax - ymin), 3)
 
-            fuel_consumed.append(total_fuel)
+            cycle_fuel_consumed.append(total_fuel)
             fuel_rate.append(rate)
+            cycle_distance.append(total_distance)
 
             # Mendapatkan time_initial dan time_terminal
             res_awal = df[df["distance_total"] == x_cycle[0]]
@@ -106,8 +108,9 @@ def fuel_calculation(df, data_reg):
 
     # Membuat DataFrame untuk hasilnya
     fuel_data_summary = pd.DataFrame({
-        'Cycle': range(1, len(fuel_consumed) + 1),
-        'Fuel_Consumed': fuel_consumed,
+        'Cycle': range(1, len(cycle_fuel_consumed) + 1),
+        'Cycle_Fuel_Consumed': cycle_fuel_consumed,
+        'Cycle_Distance': cycle_distance,
         'Fuel_Rate': fuel_rate,
         'Time_Awal': time_initial_list,
         'Time_Akhir': time_terminal_list

@@ -10,7 +10,8 @@ fuel_data_storage = pd.DataFrame()
 
 class FuelData(BaseModel):
     Cycle: int
-    Fuel_Consumed: float
+    Cycle_Fuel_Consumed: float
+    Cycle_Distance: int
     Fuel_Rate: float
     Time_Awal: str
     Time_Akhir: str

@@ -5,3 +5,5 @@ requests
 apscheduler
 fastapi
 uvicorn
+asyncio
+asyncpg
