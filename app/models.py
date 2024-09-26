@@ -14,12 +14,12 @@ class FuelDataModel:
             '''
             for item in data:
                 await connection.execute(query,
-                                         item.Cycle,
-                                         item.Cycle_Fuel_Consumed,
-                                         item.Cycle_Distance,
-                                         item.Fuel_Rate,
-                                         item.Time_Awal,
-                                         item.Time_Akhir)
+                                         item.cycle,
+                                         item.cycle_fuel_consumed,
+                                         item.cycle_distance,
+                                         item.fuel_rate,
+                                         item.time_awal,
+                                         item.time_akhir)
         finally:
             await connection.close()
 
