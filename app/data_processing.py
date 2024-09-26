@@ -111,11 +111,11 @@ def fuel_calculation(df, data_reg):
 
     # Membuat DataFrame untuk hasilnya
     fuel_data_summary = pd.DataFrame({
-        'Cycle': range(1, len(cycle_fuel_consumed) + 1),
-        'Cycle_Fuel_Consumed': cycle_fuel_consumed,
-        'Cycle_Distance': cycle_distance,
-        'Fuel_Rate': fuel_rate,
-        'Time_Awal': time_initial_list,
-        'Time_Akhir': time_terminal_list
+        'cycle': range(1, len(cycle_fuel_consumed) + 1),
+        'cycle_fuel_consumed': cycle_fuel_consumed,
+        'cycle_distance': cycle_distance,
+        'fuel_rate': fuel_rate,
+        'time_awal': time_initial_list,
+        'time_akhir': time_terminal_list
     })
     return fuel_data_summary

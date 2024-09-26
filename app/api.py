@@ -16,7 +16,8 @@ async def post_fuel_rate(data: List[FuelData]):
         return {"message": "Data berhasil disimpan ke database", "data_count": len(data)}
     except Exception as e:
         print(f"Error saat menyimpan data: {e}")
-        raise HTTPException(status_code=500, detail="Gagal menyimpan data")
+        raise HTTPException(
+            status_code=500, detail=f"Gagal menyimpan data, note: {e}")
 
 
 @app.get("/fuel-rate", response_model=List[FuelData])
